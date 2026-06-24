@@ -7,7 +7,7 @@ COPY mvnw mvnw.cmd pom.xml ./
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
 
 COPY src/ src/
-RUN ./mvnw package -DskipTests -q
+RUN ./mvnw package -Dmaven.test.skip=true -q
 
 # ── 2단계: 실행 ──────────────────────────────────────────────────
 FROM eclipse-temurin:17-jre-alpine
