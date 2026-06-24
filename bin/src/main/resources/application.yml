@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    include: secret
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: "1"
+  datasource:
+    url: jdbc:mysql://localhost:3306/chatbot_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
+    min-response-size: 2048
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.chatbot.backend.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+ai:
+  server:
+    url: http://localhost:8000
+
+jwt:
+  secret: VGhpcyBpcyBhIHZlcnkgbG9uZyBzZWNyZXQga2V5IHRoYXQgaXMgc2VjdXJlIGVub3VnaCBmb3IgSFMyNTY=
+  expiration: 86400000
+
+chat:
+  cleanup:
+    retention-days: 90
+

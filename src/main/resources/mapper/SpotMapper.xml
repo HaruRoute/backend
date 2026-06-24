@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chatbot.backend.domain.spot.repository.SpotRepository">
+
+    <select id="findSpots" resultType="com.chatbot.backend.domain.spot.entity.Spot">
+        SELECT 
+            content_id AS contentId,
+            title,
+            addr1,
+            addr2,
+            first_image AS firstImage,
+            first_image2 AS firstImage2,
+            mapx,
+            mapy,
+            area_code AS areaCode,
+            sigungu_code AS sigunguCode,
+            content_type_id AS contentTypeId
+        FROM spots
+        <where>
+            <if test="areaCode != null and areaCode != ''">
+                AND area_code = #{areaCode}
+            </if>
+            <if test="sigunguCode != null and sigunguCode != ''">
+                AND sigungu_code = #{sigunguCode}
+            </if>
+            <if test="contentTypeId != null and contentTypeId != ''">
+                AND content_type_id = #{contentTypeId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="minX != null and maxX != null">
+                AND mapx &gt;= #{minX} AND mapx &lt;= #{maxX}
+            </if>
+            <if test="minY != null and maxY != null">
+                AND mapy &gt;= #{minY} AND mapy &lt;= #{maxY}
+            </if>
+        </where>
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM spots
+    </select>
+
+    <insert id="upsert" parameterType="com.chatbot.backend.domain.spot.entity.Spot">
+        INSERT INTO spots (
+            content_id, title, addr1, addr2, first_image, first_image2, mapx, mapy, area_code, sigungu_code, content_type_id
+        ) VALUES (
+            #{contentId}, #{title}, #{addr1}, #{addr2}, #{firstImage}, #{firstImage2}, #{mapx}, #{mapy}, #{areaCode}, #{sigunguCode}, #{contentTypeId}
+        ) ON DUPLICATE KEY UPDATE
+            title = VALUES(title),
+            addr1 = VALUES(addr1),
+            addr2 = VALUES(addr2),
+            first_image = VALUES(first_image),
+            first_image2 = VALUES(first_image2),
+            mapx = VALUES(mapx),
+            mapy = VALUES(mapy),
+            area_code = VALUES(area_code),
+            sigungu_code = VALUES(sigungu_code),
+            content_type_id = VALUES(content_type_id)
+    </insert>
+
+    <insert id="upsertBatch" parameterType="java.util.List">
+        INSERT INTO spots (
+            content_id, title, addr1, addr2, first_image, first_image2, mapx, mapy, area_code, sigungu_code, content_type_id
+        ) VALUES 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.contentId}, #{item.title}, #{item.addr1}, #{item.addr2}, #{item.firstImage}, #{item.firstImage2}, #{item.mapx}, #{item.mapy}, #{item.areaCode}, #{item.sigunguCode}, #{item.contentTypeId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            title = VALUES(title),
+            addr1 = VALUES(addr1),
+            addr2 = VALUES(addr2),
+            first_image = VALUES(first_image),
+            first_image2 = VALUES(first_image2),
+            mapx = VALUES(mapx),
+            mapy = VALUES(mapy),
+            area_code = VALUES(area_code),
+            sigungu_code = VALUES(sigungu_code),
+            content_type_id = VALUES(content_type_id)
+    </insert>
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chatbot.backend.domain.post.repository.PostRepository">
+
+    <insert id="insert" parameterType="com.chatbot.backend.domain.post.entity.Post"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO posts (title, content, author_id, author_name, view_count, category, route_data, route_name, created_at)
+        VALUES (#{title}, #{content}, #{authorId}, #{authorName}, 0, #{category}, #{routeData}, #{routeName}, #{createdAt})
+    </insert>
+
+    <select id="findAll" resultType="com.chatbot.backend.domain.post.entity.Post">
+        SELECT id, title, content, author_id, author_name, view_count, category, route_data, route_name, created_at, updated_at
+        FROM posts
+        <where>
+            <if test="category != null and category != ''">
+                category = #{category}
+            </if>
+        </where>
+        <choose>
+            <when test="best">ORDER BY view_count DESC</when>
+            <otherwise>ORDER BY created_at DESC</otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM posts
+        <where>
+            <if test="category != null and category != ''">
+                category = #{category}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultType="com.chatbot.backend.domain.post.entity.Post">
+        SELECT id, title, content, author_id, author_name, view_count, category, route_data, route_name, created_at, updated_at
+        FROM posts WHERE id = #{id}
+    </select>
+
+    <update id="incrementViewCount">
+        UPDATE posts SET view_count = view_count + 1 WHERE id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.chatbot.backend.domain.post.entity.Post">
+        UPDATE posts
+        SET title = #{title}, content = #{content}, category = #{category},
+            route_data = #{routeData}, route_name = #{routeName}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM posts WHERE id = #{id}
+    </delete>
+
+</mapper>

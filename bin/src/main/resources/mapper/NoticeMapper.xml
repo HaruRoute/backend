@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chatbot.backend.domain.notice.repository.NoticeRepository">
+
+    <insert id="insert" parameterType="com.chatbot.backend.domain.notice.entity.Notice"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notices (title, content, author_id, author_name, is_pinned, created_at)
+        VALUES (#{title}, #{content}, #{authorId}, #{authorName}, #{isPinned}, #{createdAt})
+    </insert>
+
+    <select id="findAllOrderByCreatedAtDesc" resultType="com.chatbot.backend.domain.notice.entity.Notice">
+        SELECT id, title, content, author_id, author_name, is_pinned, created_at, updated_at
+        FROM notices ORDER BY created_at DESC
+    </select>
+
+    <select id="findPinnedOrderByCreatedAtDesc" resultType="com.chatbot.backend.domain.notice.entity.Notice">
+        SELECT id, title, content, author_id, author_name, is_pinned, created_at, updated_at
+        FROM notices WHERE is_pinned = TRUE ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" resultType="com.chatbot.backend.domain.notice.entity.Notice">
+        SELECT id, title, content, author_id, author_name, is_pinned, created_at, updated_at
+        FROM notices WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="com.chatbot.backend.domain.notice.entity.Notice">
+        UPDATE notices
+        SET title = #{title}, content = #{content}, is_pinned = #{isPinned}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM notices WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chatbot.backend.domain.route.repository.TravelPlanRepository">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO travel_plans (user_id, title, places_json, total_distance, transit_fare, taxi_fare, created_at)
+        VALUES (#{userId}, #{title}, #{placesJson}, #{totalDistance}, #{transitFare}, #{taxiFare}, #{createdAt})
+    </insert>
+
+    <select id="findByUserId" resultType="com.chatbot.backend.domain.route.entity.TravelPlan">
+        SELECT id, user_id AS userId, title, places_json AS placesJson, total_distance AS totalDistance, transit_fare AS transitFare, taxi_fare AS taxiFare, created_at AS createdAt
+        FROM travel_plans
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+    </select>
+
+    <select id="findById" resultType="com.chatbot.backend.domain.route.entity.TravelPlan">
+        SELECT id, user_id AS userId, title, places_json AS placesJson, total_distance AS totalDistance, transit_fare AS transitFare, taxi_fare AS taxiFare, created_at AS createdAt
+        FROM travel_plans
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByIdAndUserId" resultType="com.chatbot.backend.domain.route.entity.TravelPlan">
+        SELECT id, user_id AS userId, title, places_json AS placesJson, total_distance AS totalDistance, transit_fare AS transitFare, taxi_fare AS taxiFare, created_at AS createdAt
+        FROM travel_plans
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <update id="update" parameterType="com.chatbot.backend.domain.route.entity.TravelPlan">
+        UPDATE travel_plans
+        SET title = #{title},
+            places_json = #{placesJson},
+            total_distance = #{totalDistance},
+            transit_fare = #{transitFare},
+            taxi_fare = #{taxiFare}
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM travel_plans
+        WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+</mapper>
