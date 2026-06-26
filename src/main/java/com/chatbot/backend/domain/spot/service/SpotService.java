@@ -16,7 +16,8 @@ public class SpotService {
     private final SpotRepository spotRepository;
 
     public List<SpotDto.Response> getSpots(String areaCode, String sigunguCode, String contentTypeId, Double minX, Double maxX, Double minY, Double maxY, Integer limit, Integer offset, String keyword) {
-        List<Spot> spots = spotRepository.findSpots(areaCode, sigunguCode, contentTypeId, minX, maxX, minY, maxY, limit, offset, keyword);
+        int effectiveLimit = (limit != null) ? Math.min(limit, 200) : 100;
+        List<Spot> spots = spotRepository.findSpots(areaCode, sigunguCode, contentTypeId, minX, maxX, minY, maxY, effectiveLimit, offset, keyword);
         return spots.stream().map(spot -> SpotDto.Response.builder()
                 .contentid(spot.getContentId())
                 .title(spot.getTitle())
