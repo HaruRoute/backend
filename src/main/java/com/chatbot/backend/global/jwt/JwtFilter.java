@@ -43,7 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
         // 회원가입은 POST /api/users 만 허용
         boolean isPublic = PUBLIC_PATHS.contains(path)
                 || (path.equals("/api/users") && method.equals("POST"))
-                || (method.equals("GET") && (path.startsWith("/api/notices") || path.startsWith("/api/posts")));
+                || (method.equals("GET") && (path.startsWith("/api/notices") || path.startsWith("/api/posts")))
+                || path.startsWith("/api/actuator");
 
         if (isPublic) {
             chain.doFilter(request, response);

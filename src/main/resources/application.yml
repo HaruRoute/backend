@@ -50,3 +50,18 @@ chat:
 cors:
   allowed-origins: http://localhost:5173,http://localhost:5174
 
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include: health,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: haruroute-backend
+
