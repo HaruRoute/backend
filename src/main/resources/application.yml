@@ -9,6 +9,12 @@ spring:
     url: jdbc:mysql://localhost:3306/chatbot_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: ssafy
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   batch:
     jdbc:
       initialize-schema: always
