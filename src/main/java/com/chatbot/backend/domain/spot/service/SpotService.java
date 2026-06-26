@@ -4,6 +4,7 @@ import com.chatbot.backend.domain.spot.dto.SpotDto;
 import com.chatbot.backend.domain.spot.entity.Spot;
 import com.chatbot.backend.domain.spot.repository.SpotRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class SpotService {
 
     private final SpotRepository spotRepository;
 
+    @Cacheable(value = "spots", key = "#areaCode + '_' + #sigunguCode + '_' + #contentTypeId + '_' + #minX + '_' + #maxX + '_' + #minY + '_' + #maxY + '_' + #limit + '_' + #offset + '_' + #keyword")
     public List<SpotDto.Response> getSpots(String areaCode, String sigunguCode, String contentTypeId, Double minX, Double maxX, Double minY, Double maxY, Integer limit, Integer offset, String keyword) {
         int effectiveLimit = (limit != null) ? Math.min(limit, 200) : 100;
         List<Spot> spots = spotRepository.findSpots(areaCode, sigunguCode, contentTypeId, minX, maxX, minY, maxY, effectiveLimit, offset, keyword);

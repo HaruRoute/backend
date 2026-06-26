@@ -20,6 +20,10 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
 
 server:
   port: 8080
