@@ -18,15 +18,19 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30))
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
+        RedisCacheConfiguration spotsConfig = defaultConfig.entryTtl(Duration.ofMinutes(30));
+        RedisCacheConfiguration routeConfig = defaultConfig.entryTtl(Duration.ofHours(1));
+
         return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(config)
+                .cacheDefaults(defaultConfig.entryTtl(Duration.ofMinutes(30)))
+                .withCacheConfiguration("spots", spotsConfig)
+                .withCacheConfiguration("route", routeConfig)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.chatbot.backend.domain.route.service;
 
 import com.chatbot.backend.domain.route.dto.RouteLocationDto;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class RouteService {
 
     private static final double EARTH_RADIUS = 6371.0; // 지구 반지름 (km)
 
+    @Cacheable(value = "route", key = "#requests.stream().map(r -> r.getLat() + ',' + r.getLng()).collect(T(java.util.stream.Collectors).joining('|'))")
     public RouteLocationDto.OptimizedRoute optimizeRoute(List<RouteLocationDto.Request> requests) {
         if (requests == null || requests.isEmpty()) {
             return RouteLocationDto.OptimizedRoute.builder()
