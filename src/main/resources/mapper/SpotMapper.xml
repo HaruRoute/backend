@@ -28,7 +28,7 @@
                 AND content_type_id = #{contentTypeId}
             </if>
             <if test="keyword != null and keyword != ''">
-                AND title LIKE CONCAT('%', #{keyword}, '%')
+                AND MATCH(title) AGAINST(#{keyword} IN BOOLEAN MODE)
             </if>
             <if test="minX != null and maxX != null">
                 AND mapx &gt;= #{minX} AND mapx &lt;= #{maxX}
