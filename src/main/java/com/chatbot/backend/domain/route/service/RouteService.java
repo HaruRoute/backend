@@ -12,7 +12,7 @@ public class RouteService {
 
     private static final double EARTH_RADIUS = 6371.0; // 지구 반지름 (km)
 
-    @Cacheable(value = "route", key = "#requests.stream().map(r -> r.getLat() + ',' + r.getLng()).collect(T(java.util.stream.Collectors).joining('|'))")
+    @Cacheable(value = "route", key = "#requests.![lat + ',' + lng].toString()")
     public RouteLocationDto.OptimizedRoute optimizeRoute(List<RouteLocationDto.Request> requests) {
         if (requests == null || requests.isEmpty()) {
             return RouteLocationDto.OptimizedRoute.builder()
