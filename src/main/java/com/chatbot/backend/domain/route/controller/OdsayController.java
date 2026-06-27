@@ -28,10 +28,17 @@ public class OdsayController {
 
     private final RestTemplate restTemplate;
     private final Executor odsayExecutor;
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    private String encodedApiKey;
 
     public OdsayController(RestTemplate restTemplate, @Qualifier("odsayExecutor") Executor odsayExecutor) {
         this.restTemplate = restTemplate;
         this.odsayExecutor = odsayExecutor;
+    }
+
+    @jakarta.annotation.PostConstruct
+    private void init() {
+        this.encodedApiKey = java.net.URLEncoder.encode(odsayApiKey, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @PostMapping("/transit-fares")
@@ -57,8 +64,6 @@ public class OdsayController {
                 int segTransitFare = 0;
                 int segTaxiFare = 0;
 
-                String encodedApiKey = java.net.URLEncoder.encode(odsayApiKey, java.nio.charset.StandardCharsets.UTF_8);
-
                 URI uri = UriComponentsBuilder.fromUriString("https://api.odsay.com/v1/api/searchPubTransPathT")
                         .queryParam("apiKey", encodedApiKey)
                         .queryParam("SX", start.getLng())
@@ -72,9 +77,7 @@ public class OdsayController {
                     String rawResponse = restTemplate.getForObject(uri, String.class);
                     log.debug("ODsay response for segment {}: {}", segmentIdx, rawResponse);
 
-                    // Parse rawResponse back to Map
-                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                    Map<String, Object> result = mapper.readValue(rawResponse,
+                    Map<String, Object> result = objectMapper.readValue(rawResponse,
                             new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {
                             });
 
@@ -117,8 +120,7 @@ public class OdsayController {
                     
                     org.springframework.http.ResponseEntity<String> kakaoResponse = restTemplate.exchange(kakaoUri, org.springframework.http.HttpMethod.GET, entity, String.class);
                     
-                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                    Map<String, Object> kakaoResult = mapper.readValue(kakaoResponse.getBody(), new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+                    Map<String, Object> kakaoResult = objectMapper.readValue(kakaoResponse.getBody(), new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
                     
                     if (kakaoResult != null && kakaoResult.containsKey("routes")) {
                         @SuppressWarnings("unchecked")

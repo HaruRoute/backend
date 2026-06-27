@@ -37,8 +37,7 @@ public class NoticeService {
 
     @Transactional
     public NoticeDto.Response create(String userId, NoticeDto.Request request) {
-        checkAdmin(userId);
-        User user = userRepository.findById(userId);
+        User user = checkAdmin(userId);
         Notice notice = Notice.builder()
                 .title(request.getTitle()).content(request.getContent())
                 .authorId(userId).authorName(user.getName())
@@ -67,10 +66,11 @@ public class NoticeService {
         noticeRepository.delete(id);
     }
 
-    private void checkAdmin(String userId) {
+    private User checkAdmin(String userId) {
         User user = userRepository.findById(userId);
         if (user == null || !"ADMIN".equals(user.getRole()))
             throw new IllegalStateException("관리자만 접근 가능합니다.");
+        return user;
     }
 
     private Notice findOrThrow(Long id) {

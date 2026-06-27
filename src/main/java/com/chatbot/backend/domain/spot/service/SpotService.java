@@ -16,7 +16,12 @@ public class SpotService {
 
     private final SpotRepository spotRepository;
 
-    @Cacheable(value = "spots", key = "#areaCode + '_' + #sigunguCode + '_' + #contentTypeId + '_' + #minX + '_' + #maxX + '_' + #minY + '_' + #maxY + '_' + #limit + '_' + #offset + '_' + #keyword")
+    @Cacheable(value = "spots", key = "#areaCode + '_' + #sigunguCode + '_' + #contentTypeId + '_' + " +
+            "(#minX != null ? T(Math).round(#minX * 10000) : 'N') + '_' + " +
+            "(#maxX != null ? T(Math).round(#maxX * 10000) : 'N') + '_' + " +
+            "(#minY != null ? T(Math).round(#minY * 10000) : 'N') + '_' + " +
+            "(#maxY != null ? T(Math).round(#maxY * 10000) : 'N') + '_' + " +
+            "#limit + '_' + #offset + '_' + #keyword")
     public List<SpotDto.Response> getSpots(String areaCode, String sigunguCode, String contentTypeId, Double minX, Double maxX, Double minY, Double maxY, Integer limit, Integer offset, String keyword) {
         int effectiveLimit = (limit != null) ? Math.min(limit, 200) : 100;
         List<Spot> spots = spotRepository.findSpots(areaCode, sigunguCode, contentTypeId, minX, maxX, minY, maxY, effectiveLimit, offset, keyword);
